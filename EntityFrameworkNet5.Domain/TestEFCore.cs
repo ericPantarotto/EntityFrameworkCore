@@ -4,5 +4,6 @@ namespace EntityFrameworkCore.Domain
     {
         public int Id { get; set; }
         public string  NameTest { get; set; }
+        public int TestNumber { get; set; }     
     } 
 }
