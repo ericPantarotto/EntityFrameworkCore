@@ -1,7 +1,8 @@
 namespace EntityFrameworkCore.Domain
 {
-    public class Test
+    public class TestEFCore
     {
         public int Id { get; set; }
+        public string  NameTest { get; set; }
     } 
 }
