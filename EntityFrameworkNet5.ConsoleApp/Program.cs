@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EntityFrameworkCore.Data;
 using EntityFrameworkCore.Domain;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace EntityFrameworkNet5.ConsoleApp
@@ -20,9 +21,12 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //NOTE: SELECTING
             //await SimpleQuery();
-            await SimpleQueryJson();
+            //await SimpleQueryJson();
             
-            
+            //NOTE: FILTERING 
+            // await QueryFilters();
+            // await QueryFiltersInput();
+            await QueryFiltersContains();
 
             Console.WriteLine("Press any key to end ...");
             Console.ReadKey();
@@ -98,6 +102,32 @@ namespace EntityFrameworkNet5.ConsoleApp
             var myEntity = context.Leagues.Select(l => new { Id = l.Id, Name = l.Name, TestResultOnName = !string.IsNullOrWhiteSpace(l.Name) } );
             var leagueJson=  await Task.Run(() => JsonConvert.SerializeObject(myEntity, settings)) ;
             Console.WriteLine(leagueJson);
+        }
+
+        private static async Task QueryFilters()
+        {
+            var leagues = await context.Leagues.Where(league => league.Name == "Serie A").ToListAsync();
+            leagues.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
+        }
+        private static async Task QueryFiltersInput()
+        {
+            Console.Write("Enter League Name (or part of): ");
+            var leagueName = Console.ReadLine();
+            var leagues = await context.Leagues.Where(league => league.Name.Equals(leagueName)).ToListAsync();
+            leagues.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
+        }
+        private static async Task QueryFiltersContains()
+        {
+            Console.Write("Enter League Name (or part of): ");
+            var leagueName = Console.ReadLine();
+            var exactMatches = await context.Leagues.Where(league => league.Name.Equals(leagueName)).ToListAsync();
+            exactMatches.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
+
+            var partialMatches = await context.Leagues.Where(league => league.Name.Contains(leagueName)).ToListAsync();
+            partialMatches.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
+
+            var partialMatchesEF = await context.Leagues.Where(league => EF.Functions.Like(league.Name, $"%{leagueName}%")).ToListAsync();
+            partialMatchesEF.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
         }
     }
 }
