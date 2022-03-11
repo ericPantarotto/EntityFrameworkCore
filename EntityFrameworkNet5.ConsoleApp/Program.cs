@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EntityFrameworkCore.Data;
 using EntityFrameworkCore.Domain;
+using Newtonsoft.Json;
 
 namespace EntityFrameworkNet5.ConsoleApp
 {
@@ -11,10 +13,16 @@ namespace EntityFrameworkNet5.ConsoleApp
         private static readonly FootBallLeagueDbContext context = new();
         static async Task Main(string[] args)
         {
+            //NOTE:  INSERTS
             // await InitialInsert();
             //await InsertWithTeam();
-            await AddTeamLeagueTogether();
-        
+            //await AddTeamLeagueTogether();
+
+            //NOTE: SELECTING
+            //await SimpleQuery();
+            await SimpleQueryJson();
+            
+            
 
             Console.WriteLine("Press any key to end ...");
             Console.ReadKey();
@@ -71,6 +79,25 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             await context.SaveChangesAsync();
 
+        }
+
+        static async Task SimpleQuery()
+        {
+            var leagues = context.Leagues.Distinct().ToList();
+            leagues.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
+        }
+        static async Task SimpleQueryJson()
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                Error = (sender, args) => { args.ErrorContext.Handled = true;}
+            };
+            
+            using var context =  new FootBallLeagueDbContext();
+            var myEntity = context.Leagues.Select(l => new { Id = l.Id, Name = l.Name, TestResultOnName = !string.IsNullOrWhiteSpace(l.Name) } );
+            var leagueJson=  await Task.Run(() => JsonConvert.SerializeObject(myEntity, settings)) ;
+            Console.WriteLine(leagueJson);
         }
     }
 }
