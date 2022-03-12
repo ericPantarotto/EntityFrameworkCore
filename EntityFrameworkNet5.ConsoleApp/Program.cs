@@ -20,7 +20,7 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await AddTeamLeagueTogether();
 
             //NOTE: SELECTING
-            //await SimpleQuery();
+            //SimpleQuery();
             //await SimpleQueryJson();
             
             //NOTE: FILTERING 
@@ -28,8 +28,10 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await QueryFiltersInput();
             // await QueryFiltersContains();
 
-            //NOTE:
-            await AdditionalExecutionMethods();
+            //await AdditionalExecutionMethods();
+
+            //NOTE: LINQ
+            await AlternativeLinqSyntax();
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -88,7 +90,7 @@ namespace EntityFrameworkNet5.ConsoleApp
 
         }
 
-        static async Task SimpleQuery()
+        static void  SimpleQuery()
         {
             var leagues = context.Leagues.Distinct().ToList();
             leagues.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
@@ -161,5 +163,24 @@ namespace EntityFrameworkNet5.ConsoleApp
             var leagueFind = await leagues.FindAsync(min); //pass the Primary Key !
             
         }
+
+        private static async Task AlternativeLinqSyntax()
+        {
+            //NOTE: this would be working too in a non async context
+            // var teams = from team in context.Teams select team;
+
+            Console.Write("Enter League Name (or part of): ");
+            var leagueName = Console.ReadLine();
+            
+            var teams = await (from team in context.Teams 
+                where EF.Functions.Like(team.Name, $"%{leagueName}%")
+                select team).ToListAsync();
+            
+            foreach (var team in teams)
+            {
+                Console.WriteLine($"{team.Id} - {team.Name}");
+            }
+        }
+
     }
 }
