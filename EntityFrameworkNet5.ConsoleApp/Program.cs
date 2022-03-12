@@ -26,10 +26,13 @@ namespace EntityFrameworkNet5.ConsoleApp
             //NOTE: FILTERING 
             // await QueryFilters();
             // await QueryFiltersInput();
-            await QueryFiltersContains();
+            // await QueryFiltersContains();
+
+            //NOTE:
+            await AdditionalExecutionMethods();
 
             Console.WriteLine("Press any key to end ...");
-            Console.ReadKey();
+            Console.Read();
         }
 
         static async Task InitialInsert()
@@ -128,6 +131,35 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             var partialMatchesEF = await context.Leagues.Where(league => EF.Functions.Like(league.Name, $"%{leagueName}%")).ToListAsync();
             partialMatchesEF.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
+        }
+
+        private static async Task AdditionalExecutionMethods()
+        {
+            //var league = context.Leagues.Where(x => x.Name.Contains("a")).FirstOrDefault();
+            //HACK: Executing method
+            var league = await context.Leagues.FirstOrDefaultAsync(x => x.Name.Contains("a"));
+            if (league is not null)
+            {
+                Console.WriteLine($"{league?.Id} - {league?.Name}");
+            }
+
+            var leagues = context.Leagues;
+            var list = await leagues.ToListAsync();
+            var first = await leagues.FirstAsync(); // it is expecting a list and will take the first
+            var firstOrDefault = await leagues.FirstOrDefaultAsync();
+                Console.WriteLine($"{firstOrDefault.Id} - {firstOrDefault.Name}");
+            //NOTE: single expects only 1 record to be returned , if it sees more that one it will throw an exception
+            var single = await leagues.SingleAsync(x => x.Name.Equals("Serie A")); 
+            //FIXME: this SINGLE statement will throw an error as it would return more than 1 element
+            // var singleOrDefault = await leagues.SingleOrDefaultAsync();
+            var count = await leagues.CountAsync();
+            var longCount = await leagues.LongCountAsync();
+            var min = await leagues.MinAsync(x => x.Id);
+            Console.WriteLine(new List<int>{1 , 2, 3}.Min()) ;
+
+            //DbSet methods
+            var leagueFind = await leagues.FindAsync(min); //pass the Primary Key !
+            
         }
     }
 }
