@@ -31,7 +31,11 @@ namespace EntityFrameworkNet5.ConsoleApp
             //await AdditionalExecutionMethods();
 
             //NOTE: LINQ
-            await AlternativeLinqSyntax();
+            //await AlternativeLinqSyntax();
+            
+            //NOTE: UPDATE
+            // await SimpleUpdateLeagueRecord();
+            await SimpleUpdateTeamRecord();
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -181,6 +185,38 @@ namespace EntityFrameworkNet5.ConsoleApp
                 Console.WriteLine($"{team.Id} - {team.Name}");
             }
         }
+        private static async Task SimpleUpdateLeagueRecord()
+        {
+            //Retreive Record
+            League league  = await GetLeagueRecord(1010);
+            // Make record change
+            league.Name = "Scottish Premiership";
+            await context.SaveChangesAsync();
+            
+            league= await GetLeagueRecord(1010);
+            Console.WriteLine($"{league.Id} - {league.Name}");
+        }
+        private static async Task<League> GetLeagueRecord(int id)
+        {
+            return await context.Leagues.FindAsync(id);
+        }
+        private static async Task<Team> GetTeamRecord(int id)
+        {
+            return await context.Teams.FindAsync(id);
+        }
 
+        private static async Task SimpleUpdateTeamRecord()
+        {
+            var team = new Team{ Id= 6, Name="Tivoli Gardens", LeagueId=1010};
+            context.Teams.Update(team);
+            
+            await context.SaveChangesAsync();
+            Team teamRecord = await GetTeamRecord(6);
+            Console.WriteLine($"{teamRecord.Id} - {teamRecord.Name} - {teamRecord.LeagueId}");
+
+            var teamNoPK = new Team{ Name="Seba United FC", LeagueId=1010};
+            context.Teams.Update(teamNoPK);
+            await context.SaveChangesAsync();
+        }
     }
 }
