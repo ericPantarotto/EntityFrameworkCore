@@ -41,8 +41,10 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await SimpleDelete();
 
             //NOTE: Tracking
-            await TrackingVsNoTracking();
+            // await TrackingVsNoTracking();
 
+            //NOTE: One to many
+            await GetTeamsFromLeague();
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -101,6 +103,18 @@ namespace EntityFrameworkNet5.ConsoleApp
 
         }
 
+        private static async Task GetTeamsFromLeague()
+        {
+            
+            
+                (await context.Leagues
+                    .Include(league => league.Teams)
+                    .FirstAsync(l => l.Name == "Serie A"))
+                    .Teams
+                    .ForEach(t => Console.WriteLine($"Team {t.Id}: {t.Name}"));
+
+            
+        }
         static void  SimpleQuery()
         {
             var leagues = context.Leagues.Distinct().ToList();
@@ -136,7 +150,8 @@ namespace EntityFrameworkNet5.ConsoleApp
         {
             Console.Write("Enter League Name (or part of): ");
             var leagueName = Console.ReadLine();
-            var exactMatches = await context.Leagues.Where(league => league.Name.Equals(leagueName)).ToListAsync();
+            var exactMatches = await context.Leagues.
+            Where(league => league.Name.Equals(leagueName)).ToListAsync();
             exactMatches.ForEach(league => Console.WriteLine($"{league.Id} - {league.Name}"));
 
             var partialMatches = await context.Leagues.Where(league => league.Name.Contains(leagueName)).ToListAsync();
