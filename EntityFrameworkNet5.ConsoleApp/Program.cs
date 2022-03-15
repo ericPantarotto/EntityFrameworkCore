@@ -35,7 +35,14 @@ namespace EntityFrameworkNet5.ConsoleApp
             
             //NOTE: UPDATE
             // await SimpleUpdateLeagueRecord();
-            await SimpleUpdateTeamRecord();
+            // await SimpleUpdateTeamRecord();
+
+            //NOTE: Delete
+            // await SimpleDelete();
+
+            //NOTE: Tracking
+            await TrackingVsNoTracking();
+
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -158,6 +165,7 @@ namespace EntityFrameworkNet5.ConsoleApp
             var single = await leagues.SingleAsync(x => x.Name.Equals("Serie A")); 
             //FIXME: this SINGLE statement will throw an error as it would return more than 1 element
             // var singleOrDefault = await leagues.SingleOrDefaultAsync();
+
             var count = await leagues.CountAsync();
             var longCount = await leagues.LongCountAsync();
             var min = await leagues.MinAsync(x => x.Id);
@@ -207,7 +215,7 @@ namespace EntityFrameworkNet5.ConsoleApp
 
         private static async Task SimpleUpdateTeamRecord()
         {
-            var team = new Team{ Id= 6, Name="Tivoli Gardens", LeagueId=1010};
+            var team = new Team{ Id= 6, Name="Tivoli Gardens", LeagueId=1010 };
             context.Teams.Update(team);
             
             await context.SaveChangesAsync();
@@ -218,5 +226,25 @@ namespace EntityFrameworkNet5.ConsoleApp
             context.Teams.Update(teamNoPK);
             await context.SaveChangesAsync();
         }
+        private static async Task SimpleDelete()
+        {
+            League league  = await context.Leagues.FindAsync(1012);
+            context.Leagues.Remove(league);
+            await context.SaveChangesAsync();
+        }
+        private static async Task TrackingVsNoTracking()
+        {
+            var withTracking = await context.Teams.FirstOrDefaultAsync(team => team.Id == 10);
+            var withNoTracking = await context.Teams.AsNoTracking().FirstOrDefaultAsync(team => team.Id == 11);
+
+            withTracking.Name = "TrackingNEW";
+            withNoTracking.Name = "NoTrackingNEW";
+
+            var entries = context.ChangeTracker.Entries();
+            await context.SaveChangesAsync();
+            var entriesAfterSave = context.ChangeTracker.Entries();
+        }
+
+         
     }
 }
