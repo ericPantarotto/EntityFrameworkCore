@@ -15,6 +15,7 @@ namespace EntityFrameworkCore.Data
         }
         public DbSet<Team> Teams {get; set; }
         public DbSet<League> Leagues { get; set; }
+        public DbSet<Match> Matches { get; set; }
         // public DbSet<Test> test { get; set; }
     }  
 }
