@@ -44,8 +44,15 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await TrackingVsNoTracking();
 
             //NOTE: One to many
-            await GetTeamsFromLeague();
+            // await GetTeamsFromLeague();
 
+            //Inserting related Data
+            // await AddNewTeamWithLeague();
+            // await AddNewTeamWithLeagueId();
+            // await AddNewLeagueWithTeams();
+            // await AddNewMaches();
+
+           
             Console.WriteLine("Press any key to end ...");
             Console.Read();
         }
@@ -259,7 +266,52 @@ namespace EntityFrameworkNet5.ConsoleApp
             await context.SaveChangesAsync();
             var entriesAfterSave = context.ChangeTracker.Entries();
         }
+        
+        private static async Task AddNewTeamWithLeague()
+        {
+            var league = new League { Name = "Ligue 1"};
+            var team = new Team { Name = "PSG", League = league};
+            await context.AddAsync(team);
+            await context.SaveChangesAsync();
+        }
+        private static async Task AddNewTeamWithLeagueId()
+        {
+            var team = new Team { Name = "Fiorentina", LeagueId = 1007};
+            await context.AddAsync(team);
+            await context.SaveChangesAsync();
+        }
+        private static async Task AddNewLeagueWithTeams()
+        {
+            var teams = new List<Team>
+            {
+                new Team { Name = "Rivoli United"},
+                new Team { Name = "Waterhouse FC"}
+            };
 
-         
+            var league = new League { Name = "CIFA", Teams = teams};
+            
+            await context.AddAsync(league);
+            await context.SaveChangesAsync();
+        }
+        private static async Task AddNewMaches()
+        {
+            var matches = new List<Match>
+            {
+                new Match {HomeTeamId = 1, AwayTeamId = 2, Date = new DateTime(2022,01,01) },
+                new Match {HomeTeamId = 2, AwayTeamId = 3, Date = DateTime.Now },
+                new Match {HomeTeamId = 1, AwayTeamId = 3, Date = DateTime.Now }
+            };
+            await context.AddRangeAsync(matches);
+            await context.SaveChangesAsync();
+        }
+        
+        private static async Task AddNewCoach()
+        {
+            var coach1 = new Coach { Name = "Jose Mourinho", TeamId = 1};
+            await context.AddAsync(coach1);
+            var coach2 = new Coach { Name = "Antonio Conte"};
+            await context.AddAsync(coach2);
+            await context.SaveChangesAsync();
+        }
     }
 }
