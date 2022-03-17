@@ -46,12 +46,23 @@ namespace EntityFrameworkNet5.ConsoleApp
             //NOTE: One to many
             // await GetTeamsFromLeague();
 
-            //Inserting related Data
+            //NOTE: Inserting related Data
             // await AddNewTeamWithLeague();
             // await AddNewTeamWithLeagueId();
             // await AddNewLeagueWithTeams();
             // await AddNewMaches();
+            // await AddNewCoach();
 
+            //NOTE: including related data
+            // await QueryRelatedRecords();
+
+            //NOTE: Projections
+            // await SelectOneProperty();
+            // await AnonymousProjection();
+            // await StronglyTypeProjection();
+
+            //NOTE: Filtering with related data
+            await FilteringWithRelatedData();
            
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -304,7 +315,6 @@ namespace EntityFrameworkNet5.ConsoleApp
             await context.AddRangeAsync(matches);
             await context.SaveChangesAsync();
         }
-        
         private static async Task AddNewCoach()
         {
             var coach1 = new Coach { Name = "Jose Mourinho", TeamId = 1};
@@ -313,5 +323,79 @@ namespace EntityFrameworkNet5.ConsoleApp
             await context.AddAsync(coach2);
             await context.SaveChangesAsync();
         }
+
+        private static async Task QueryRelatedRecords()
+        {
+            //get many related records: Leagues => Teams
+            var leagues = await context.Leagues.Include(t => t.Teams).ToListAsync();
+
+            //get one relating record = Team = > Coach , using the coach navigation property
+            var team = await context.Teams
+                .Include(t => t.Coach)
+                .FirstOrDefaultAsync(t => t.Id ==1);
+            
+            //Get grand children related record: Team => Matches => Home/Away Team
+            var teamsWithMatchesAndOpponents = await context.Teams
+                .Include(t => t.AwayMatches).ThenInclude(m => m.HomeTeam).ThenInclude(t => t.Coach)
+                .Include(t => t.HomeMatches).ThenInclude(m => m.AwayTeam)
+                .FirstOrDefaultAsync(t => t.Id ==2);
+            
+            //Get Includes with filters
+            var teams = await context.Teams
+                .Where(t => t.HomeMatches.Count > 0)
+                .Include(t => t.Coach)
+                .ToListAsync();
+        }
+
+
+        private static async Task SelectOneProperty()
+        {
+            //Restrict to only 1  property
+            List<string> teams = await context.Teams
+                .Select(q => q.Name)
+                .ToListAsync();   
+        }
+        private static async Task AnonymousProjection()
+        {
+            //multiple prop from multiple tables: list of team names and coach names
+            //used for on the fly scenario
+            var teams = await context.Teams
+                .Include(q => q.Coach)
+                .Select(t => 
+                    new 
+                    { 
+                        TeamName = t.Name, 
+                        CoachName = t.Coach.Name 
+                    })
+                .ToListAsync();
+            teams.ForEach(item => Console.WriteLine($"Team: {item.TeamName} | Coach: {item.CoachName}"));
+        }
+
+        public record TeamDetail(
+           string TeamName,
+           string CoachName,
+           string LeagueName 
+        );
+        private static async Task StronglyTypeProjection()
+        {
+            var teams = await context.Teams
+                .Include(q => q.Coach)
+                .Include(q => q.League)
+                .Select(t => 
+                    new TeamDetail
+                    (
+                        t.Name, 
+                        t.Coach.Name,
+                        t.League.Name 
+                    )
+                ).ToListAsync();
+            teams.ForEach(item => Console.WriteLine($"Team: {item.TeamName} | League: {item.LeagueName} | Coach: {item.CoachName}"));
+        }
+
+        private static async Task FilteringWithRelatedData()
+        {
+            var leagues = await context.Leagues.Where(l => l.Teams.Any(x => x.Name.Contains("Bay"))).ToListAsync();
+        }
+
     }
 }
