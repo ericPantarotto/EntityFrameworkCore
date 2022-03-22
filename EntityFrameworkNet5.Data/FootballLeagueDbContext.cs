@@ -34,6 +34,7 @@ namespace EntityFrameworkCore.Data
         public DbSet<League> Leagues { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Coach> Coaches { get; set; }
+        public DbSet<TeamCoachesLeagues> TeamCoachesLeagues { get; set; }
         // public DbSet<Test> test { get; set; }
     }  
 }
