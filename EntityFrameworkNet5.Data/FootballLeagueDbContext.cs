@@ -30,7 +30,7 @@ namespace EntityFrameworkCore.Data
                 .IsRequired()
                 .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
             
-            modelBuilder.Entity<TeamCoachesLeaguesView>().HasNoKey().ToView("TeamCoachesLeagues");
+            modelBuilder.Entity<TeamCoachesLeaguesView>().HasNoKey().ToView("TeamsCoachesLeagues");
         } 
         public DbSet<Team> Teams {get; set; }
         public DbSet<League> Leagues { get; set; }
