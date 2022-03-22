@@ -65,8 +65,19 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await FilteringWithRelatedData();
 
             //NOTE:: Calling a View
-            await QueryView();
-           
+            // await QueryView();
+
+            //NOTE: SQL Raw
+            // await RawSQLQuery();
+
+            //NOTE: Sp
+            // await ExecStoredProcedure();
+
+            //NOTE: Non Query Raw
+            // await DeleteUsingEF();
+            await ExecuteNonQueryCommand();
+
+
             Console.WriteLine("Press any key to end ...");
             Console.Read();
         }
@@ -404,6 +415,36 @@ namespace EntityFrameworkNet5.ConsoleApp
         {
             var details = await context.TeamCoachesLeagues.ToListAsync();
             details.ForEach(item => Console.WriteLine($"Team: {item.Name} | League: {item.LeagueName} | Coach: {item.CoachName}"));
+        }
+
+        private static async Task RawSQLQuery()
+        {
+            var name= "AS Roma";
+            var team1 = await context.Teams.FromSqlRaw($"select Id, LeagueId, Name from teams where name = '{name}'")
+                .Include(q => q.Coach)
+                .ToListAsync();
+
+            var team2 = await context.Teams.FromSqlInterpolated($"select * from teams where name = {name}").ToListAsync();  
+        }
+        private static async Task ExecStoredProcedure()
+        {
+            var teamId = 1;
+            var result = await context.Coaches.FromSqlRaw("EXEC [dbo].[sp_GetTeamCoach] {0}", teamId).ToListAsync();
+        }
+
+        private static async Task DeleteUsingEF()
+        {
+            using var context =  new FootBallLeagueDbContext();
+            var coach  = await context.Coaches.Where(c => c.Name.Contains("zzz")).FirstOrDefaultAsync();
+            
+            context.Entry(coach).State = EntityState.Deleted;
+            await context.SaveChangesAsync();
+        }
+        private static async Task ExecuteNonQueryCommand()
+        {
+            var coachId  = 6;
+            // int affectedRows = await  context.Database.ExecuteSqlRawAsync("exec sp_DeleteCoachById {0}", coachId);
+            int affectedRows = await  context.Database.ExecuteSqlInterpolatedAsync($"exec sp_DeleteCoachById {coachId}");
         }
     }
 }
