@@ -29,12 +29,15 @@ namespace EntityFrameworkCore.Data
                 .HasForeignKey(m => m.AwayTeamId)
                 .IsRequired()
                 .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<TeamCoachesLeaguesView>().HasNoKey().ToView("TeamCoachesLeaguesView");
         } 
         public DbSet<Team> Teams {get; set; }
         public DbSet<League> Leagues { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Coach> Coaches { get; set; }
-        // public DbSet<TeamCoachesLeagues> TeamCoachesLeagues { get; set; }
+        public DbSet<TeamCoachesLeaguesView> TeamCoachesLeagues { get; set; }
+
         // public DbSet<Test> test { get; set; }
     }  
 }
