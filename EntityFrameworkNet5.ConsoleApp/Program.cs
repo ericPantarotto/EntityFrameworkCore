@@ -65,7 +65,7 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await FilteringWithRelatedData();
 
             //NOTE:: Calling a View
-            // await QueryView();
+            await QueryView();
            
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -400,10 +400,10 @@ namespace EntityFrameworkNet5.ConsoleApp
             var leagues = await context.Leagues.Where(l => l.Teams.Any(x => x.Name.Contains("Bay"))).ToListAsync();
         }
 
-        // private static async Task QueryView()
-        // {
-        //     var details = await context.TeamCoachesLeagues.ToListAsync();
-        //     details.ForEach(item => Console.WriteLine($"Team: {item.Name} | League: {item.LeagueName} | Coach: {item.CoachName}"));
-        // }
+        private static async Task QueryView()
+        {
+            var details = await context.TeamCoachesLeagues.ToListAsync();
+            details.ForEach(item => Console.WriteLine($"Team: {item.Name} | League: {item.LeagueName} | Coach: {item.CoachName}"));
+        }
     }
 }
