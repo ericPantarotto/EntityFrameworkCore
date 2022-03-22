@@ -1,6 +1,6 @@
 namespace EntityFrameworkCore.Domain
 {
-    public class TeamCoachesLeagues
+    public class TeamCoachesLeaguesView
     {
         public string Name { get; set; }
         public string CoachName { get; set; }
