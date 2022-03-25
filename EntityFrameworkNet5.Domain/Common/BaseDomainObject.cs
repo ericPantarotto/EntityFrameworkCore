@@ -1,3 +1,5 @@
+using System;
+
 namespace EntityFrameworkCore.Domain
 {
     public class BaseDomainObject
