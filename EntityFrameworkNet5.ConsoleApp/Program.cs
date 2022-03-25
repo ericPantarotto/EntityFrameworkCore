@@ -78,7 +78,10 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await ExecuteNonQueryCommand();
 
             //NOTE: Manipulating Entries
-            await SimpleUpdateTeamRecordTestUpdateDate();
+            // await SimpleUpdateTeamRecordTestUpdateDate();
+
+            //NOTE: Extending DbContext 
+            await SimpleUpdateTeamRecordWithAuditContext();
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -280,6 +283,12 @@ namespace EntityFrameworkNet5.ConsoleApp
             var team = new Team{ Id= 20, Name="Date = Eric Carlier - Sample Team ", LeagueId=1010 };
             context.Teams.Update(team);
             await context.SaveChangesAsync();
+        }
+        private static async Task SimpleUpdateTeamRecordWithAuditContext()
+        {
+            var team = new Team{ Id= 20, Name="AuditContext = Eric Carlier - Sample Team ", LeagueId=1010 };
+            context.Teams.Update(team);
+            await context.SaveChangesAsync("Test Team Management user");
         }
         private static async Task SimpleDelete()
         {
