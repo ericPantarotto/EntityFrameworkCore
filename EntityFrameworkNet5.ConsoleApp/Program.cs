@@ -75,8 +75,10 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //NOTE: Non Query Raw
             // await DeleteUsingEF();
-            await ExecuteNonQueryCommand();
+            // await ExecuteNonQueryCommand();
 
+            //NOTE: Manipulating Entries
+            await SimpleUpdateTeamRecordTestUpdateDate();
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -273,6 +275,12 @@ namespace EntityFrameworkNet5.ConsoleApp
             context.Teams.Update(teamNoPK);
             await context.SaveChangesAsync();
         }
+        private static async Task SimpleUpdateTeamRecordTestUpdateDate()
+        {
+            var team = new Team{ Id= 20, Name="Date = Eric Carlier - Sample Team ", LeagueId=1010 };
+            context.Teams.Update(team);
+            await context.SaveChangesAsync();
+        }
         private static async Task SimpleDelete()
         {
             League league  = await context.Leagues.FindAsync(1012);
@@ -294,8 +302,13 @@ namespace EntityFrameworkNet5.ConsoleApp
         
         private static async Task AddNewTeamWithLeague()
         {
-            var league = new League { Name = "Ligue 1"};
-            var team = new Team { Name = "PSG", League = league};
+            // var league = new League { Name = "Ligue 1"};
+            // var team = new Team { Name = "PSG", League = league};
+            // await context.AddAsync(team);
+            // await context.SaveChangesAsync();
+
+            var league = new League { Name = "Ligue Check Date"};
+            var team = new Team { Name = "PSG Insert Date", League = league};
             await context.AddAsync(team);
             await context.SaveChangesAsync();
         }

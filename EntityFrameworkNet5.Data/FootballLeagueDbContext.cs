@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EntityFrameworkCore.Data
 {
-    public class FootBallLeagueDbContext : DbContext
+    public class FootBallLeagueDbContext : AuditableFootballLeagueDbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,21 +40,6 @@ namespace EntityFrameworkCore.Data
             modelBuilder.ApplyConfiguration(new TeamSeedConfiguration());
             modelBuilder.ApplyConfiguration(new CoachSeedConfiguration());
         } 
-
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken =default)
-        {
-            var entries = ChangeTracker.Entries().Where(q => q.State == EntityState.Added || q.State == EntityState.Modified).ToList();
-            entries.ForEach(entry => 
-            {
-                var auditableObject = (BaseDomainObject)entry.Entity;
-                auditableObject.ModifiedDate = DateTime.Now;
-                if (entry.State == EntityState.Added)
-                {
-                    auditableObject.CreatedDate = DateTime.Now;
-                }
-            });
-            return await base.SaveChangesAsync(cancellationToken);
-        }
         public DbSet<Team> Teams {get; set; }
         public DbSet<League> Leagues { get; set; }
         public DbSet<Match> Matches { get; set; }
