@@ -1,5 +1,6 @@
 using System;
 using EntityFrameworkCore.Domain;
+using EntityFrameworkNet5.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -31,6 +32,10 @@ namespace EntityFrameworkCore.Data
                 .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
             
             modelBuilder.Entity<TeamCoachesLeaguesView>().HasNoKey().ToView("TeamsCoachesLeagues");
+
+            modelBuilder.ApplyConfiguration(new LeagueSeedConfiguration());
+            modelBuilder.ApplyConfiguration(new TeamSeedConfiguration());
+            modelBuilder.ApplyConfiguration(new CoachSeedConfiguration());
         } 
         public DbSet<Team> Teams {get; set; }
         public DbSet<League> Leagues { get; set; }
