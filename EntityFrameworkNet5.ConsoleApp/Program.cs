@@ -473,7 +473,7 @@ namespace EntityFrameworkNet5.ConsoleApp
         }
         private static async Task TestingAuditTableOnCoach()
         {
-            var coach = new Coach{ Id= 22, Name="Francoise Carlier", TeamId=22 };
+            var coach = new Coach{ Name="Francoise Carlier", TeamId=22 };
             context.Coaches.Update(coach);
             await context.SaveChangesAsync("Audit Coach tb");
         }
