@@ -81,7 +81,10 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await SimpleUpdateTeamRecordTestUpdateDate();
 
             //NOTE: Extending DbContext 
-            await SimpleUpdateTeamRecordWithAuditContext();
+            // await SimpleUpdateTeamRecordWithAuditContext();
+
+            //NOTE: Audit Table
+            await TestingAuditTableOnCoach();
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -467,6 +470,12 @@ namespace EntityFrameworkNet5.ConsoleApp
             var coachId  = 6;
             // int affectedRows = await  context.Database.ExecuteSqlRawAsync("exec sp_DeleteCoachById {0}", coachId);
             int affectedRows = await  context.Database.ExecuteSqlInterpolatedAsync($"exec sp_DeleteCoachById {coachId}");
+        }
+        private static async Task TestingAuditTableOnCoach()
+        {
+            var coach = new Coach{ Id= 22, Name="Francoise Carlier", TeamId=22 };
+            context.Coaches.Update(coach);
+            await context.SaveChangesAsync("Audit Coach tb");
         }
     }
 }
