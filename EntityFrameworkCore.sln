@@ -1,21 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32317.152
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkNet5.ConsoleApp", "EntityFrameworkNet5.ConsoleApp\EntityFrameworkNet5.ConsoleApp.csproj", "{9869B07F-157D-4445-809E-024A81DCE90A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkNet5.ConsoleApp", "EntityFrameworkNet5.ConsoleApp\EntityFrameworkNet5.ConsoleApp.csproj", "{9869B07F-157D-4445-809E-024A81DCE90A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkNet5.Data", "EntityFrameworkNet5.Data\EntityFrameworkNet5.Data.csproj", "{CAFE9F7A-34E2-4AF9-B90A-3A8FF38F3F73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkNet5.Data", "EntityFrameworkNet5.Data\EntityFrameworkNet5.Data.csproj", "{CAFE9F7A-34E2-4AF9-B90A-3A8FF38F3F73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkNet5.Domain", "EntityFrameworkNet5.Domain\EntityFrameworkNet5.Domain.csproj", "{E3FB5D39-016B-44AD-93AB-C25D764745F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkNet5.Domain", "EntityFrameworkNet5.Domain\EntityFrameworkNet5.Domain.csproj", "{E3FB5D39-016B-44AD-93AB-C25D764745F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkNet6.ConsoleApp", "EntityFrameworkNet6.ConsoleApp\EntityFrameworkNet6.ConsoleApp.csproj", "{BA4EEC90-DC59-4BFE-B768-B52777B001CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9869B07F-157D-4445-809E-024A81DCE90A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +29,15 @@ Global
 		{E3FB5D39-016B-44AD-93AB-C25D764745F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3FB5D39-016B-44AD-93AB-C25D764745F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3FB5D39-016B-44AD-93AB-C25D764745F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA4EEC90-DC59-4BFE-B768-B52777B001CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA4EEC90-DC59-4BFE-B768-B52777B001CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA4EEC90-DC59-4BFE-B768-B52777B001CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA4EEC90-DC59-4BFE-B768-B52777B001CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51CABAA2-39AC-429D-B63E-579204C5ECEC}
 	EndGlobalSection
 EndGlobal
