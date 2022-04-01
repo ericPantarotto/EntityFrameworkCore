@@ -23,6 +23,8 @@ namespace EntityFrameworkNet5.Data
                 .IsRequired()
                 .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
             
+            
+            
             builder.HasData(
                 new Team{ Id = 20, Name="Eric Carlier - Sample Team", LeagueId = 20 },
                 new Team{ Id = 21, Name="Estelle Carlier - Sample Team", LeagueId = 20 },

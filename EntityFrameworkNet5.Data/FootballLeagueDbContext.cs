@@ -27,6 +27,13 @@ namespace EntityFrameworkCore.Data
             modelBuilder.ApplyConfiguration(new TeamConfiguration());
             modelBuilder.ApplyConfiguration(new CoachConfiguration());
         } 
+
+        // protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        // {
+        //     configurationBuilder.Properties<string>()
+        //         // .AreUnicode(false)
+        //         .HaveMaxLength(50);
+        // }
         public DbSet<Team> Teams {get; set; }
         public DbSet<League> Leagues { get; set; }
         public DbSet<Match> Matches { get; set; }
