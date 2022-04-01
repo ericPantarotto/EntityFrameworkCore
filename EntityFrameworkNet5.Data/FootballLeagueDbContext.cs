@@ -40,6 +40,6 @@ namespace EntityFrameworkCore.Data
         public DbSet<Coach> Coaches { get; set; }
         public DbSet<TeamCoachesLeaguesView> TeamCoachesLeagues { get; set; }
 
-        // public DbSet<Test> test { get; set; }
+        public DbSet<TestModel> TestModels { get; set; }
     }  
 }
