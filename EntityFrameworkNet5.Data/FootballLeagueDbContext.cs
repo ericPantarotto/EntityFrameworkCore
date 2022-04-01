@@ -26,6 +26,19 @@ namespace EntityFrameworkCore.Data
             modelBuilder.ApplyConfiguration(new LeagueConfiguration());
             modelBuilder.ApplyConfiguration(new TeamConfiguration());
             modelBuilder.ApplyConfiguration(new CoachConfiguration());
+
+            //Set all FK to restrict 
+            modelBuilder.Model.GetEntityTypes()
+                .SelectMany(x => x.GetForeignKeys())
+                .Where(x => !x.IsOwnership && x.DeleteBehavior == DeleteBehavior.Cascade)
+                .ToList().ForEach(fk => 
+                {
+                    fk.DeleteBehavior = DeleteBehavior.Restrict;
+                });
+            //Indicate which tables has history/temporal tables
+            modelBuilder
+                .Entity<Team>()
+                .ToTable("Teams", b => b.IsTemporal());
         } 
 
         // protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
