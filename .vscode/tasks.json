@@ -36,6 +36,43 @@
                 "${workspaceFolder}/EntityFrameworkNet5.ConsoleApp/EntityFrameworkNet5.ConsoleApp.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+
+        {
+            "label": "buildNet6",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/EntityFrameworkNet6.ConsoleApp/EntityFrameworkNet6.ConsoleApp.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publishNet6",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/EntityFrameworkNet6.ConsoleApp/EntityFrameworkNet6.ConsoleApp.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watchNet6",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/EntityFrameworkNet6.ConsoleApp/EntityFrameworkNet6.ConsoleApp.csproj"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }
