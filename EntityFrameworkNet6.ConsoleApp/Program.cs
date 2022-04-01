@@ -84,7 +84,13 @@ FootBallLeagueDbContext context = new();
 //NOTE: Audit Table
 //await TestingAuditTableOnCoach();
 
-await TestModelQueryRelatedRecords();
+//NOTE: TestModel with Config and Data validation
+// await TestModelQueryRelatedRecords();
+
+//NOTE: temporal tables
+await TeamQueries();
+await TeamsHistoryTemporalQuery();
+
 
 Console.WriteLine("Press any key to end ...");
 Console.Read();
@@ -480,4 +486,29 @@ async Task TestModelQueryRelatedRecords()
     //get many related records: Leagues => Teams
     var leagues = await context.TestModels.Include(t => t.League).ToListAsync();
     Console.WriteLine(leagues);
+}
+
+async Task TeamQueries()
+{
+  List<Team> teams = await context.Teams.ToListAsync();
+  teams.ForEach(t => Console.WriteLine($"Team: {t.Name}"));
+}
+
+async Task TeamsHistoryTemporalQuery()
+{
+  var teamSnapshotHistory = await context.Teams
+    .TemporalAll()
+    .Where(t => t.Id == 24)
+    .OrderBy(t => EF.Property<DateTime>(t, "PeriodStart"))
+    .Select(team => 
+      new
+      {
+        Id = team.Id,
+        Name = team.Name,
+        PeriodStart =  EF.Property<DateTime>(team, "PeriodStart"),
+        PeriodEnd = EF.Property<DateTime>(team, "PeriodEnd")
+      })
+    .ToListAsync();
+
+  teamSnapshotHistory.ForEach(t => Console.WriteLine($"Team Id ({t.Id}): Name was {t.Name} from {t.PeriodStart} to {t.PeriodEnd}"));
 }
