@@ -15,14 +15,14 @@ namespace EntityFrameworkNet5.ConsoleApp
         static async Task Main(string[] args)
         {
             //NOTE:  INSERTS
-            // await InitialInsert();
+            //await InitialInsert();
             //await InsertWithTeam();
             //await AddTeamLeagueTogether();
 
             //NOTE: SELECTING
             //SimpleQuery();
             //await SimpleQueryJson();
-            
+
             //NOTE: FILTERING 
             // await QueryFilters();
             // await QueryFiltersInput();
@@ -32,7 +32,7 @@ namespace EntityFrameworkNet5.ConsoleApp
 
             //NOTE: LINQ
             //await AlternativeLinqSyntax();
-            
+
             //NOTE: UPDATE
             // await SimpleUpdateLeagueRecord();
             // await SimpleUpdateTeamRecord();
@@ -84,7 +84,12 @@ namespace EntityFrameworkNet5.ConsoleApp
             // await SimpleUpdateTeamRecordWithAuditContext();
 
             //NOTE: Audit Table
-            await TestingAuditTableOnCoach();
+            //await TestingAuditTableOnCoach();
+
+            //NOTE: DB transaction
+            await AddNewLeagueTeamsWithTransactionWithRollback();
+            //await AddNewLeagueTeamsTransaction();
+
 
             Console.WriteLine("Press any key to end ...");
             Console.Read();
@@ -109,6 +114,51 @@ namespace EntityFrameworkNet5.ConsoleApp
             await AddTeamsWithLeague(league);
             await context.SaveChangesAsync();
         }
+        static async Task AddNewLeagueTeamsTransaction()
+        {
+            //with this transaction the whole set of actions have to be succesful for the commit to happen
+            var transaction = context.Database.BeginTransaction();
+            
+            try
+            {
+                var league  = new League{ Name = "Serie A Transaction"};
+                await context.Leagues.AddAsync(league);
+                await context.SaveChangesAsync();
+
+                await AddTeamsWithLeagueWithTran(league);
+                await context.SaveChangesAsync();
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Console.WriteLine(ex.Message);
+            }
+        }
+        static async Task AddNewLeagueTeamsWithTransactionWithRollback()
+        {
+            var transaction = context.Database.BeginTransaction();
+            
+            try
+            {
+                var league  = new League{ Name = "Serie A Transaction"};
+                await context.Leagues.AddAsync(league);
+                await context.SaveChangesAsync();
+                await transaction.CreateSavepointAsync("SavedLeague");
+
+                throw new Exception("testing the rollback");
+                await AddTeamsWithLeagueWithTran(league);
+                await context.SaveChangesAsync();
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackToSavepointAsync("SavedLeague");
+                transaction.Commit(); // this will allow to have the save point to be commited to the database despite the whole transactionf failed
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         static async Task AddTeamsWithLeague(League league)
         {
             var teams = new List<Team>
@@ -126,6 +176,30 @@ namespace EntityFrameworkNet5.ConsoleApp
                 new Team
                 {
                     Name = "AS Roma",
+                    League = league
+                }
+            };
+
+            await context.AddRangeAsync(teams);
+
+        }
+        static async Task AddTeamsWithLeagueWithTran(League league)
+        {
+            var teams = new List<Team>
+            {
+                new Team
+                {
+                    Name = "JuventusTran",
+                    LeagueId = league.Id
+                },
+                new Team
+                {
+                    Name = "AC MilanTran",
+                    LeagueId = league.Id
+                },
+                new Team
+                {
+                    Name = "AS Roma Tran",
                     League = league
                 }
             };

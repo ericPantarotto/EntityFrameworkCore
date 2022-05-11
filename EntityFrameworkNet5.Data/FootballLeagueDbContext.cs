@@ -13,7 +13,12 @@ namespace EntityFrameworkCore.Data
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data source=(localdb)\\MSSQLLocalDb; Initial Catalog=FootballLeague_EFCore")
+            optionsBuilder.UseSqlServer(
+                    connectionString: "Data source=(localdb)\\MSSQLLocalDb; Initial Catalog=FootballLeague_EFCore", 
+                    sqlServerOptionsAction: sqlOptions =>
+                    { 
+                        sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                    })
                 .LogTo(Console.WriteLine, new [] { DbLoggerCategory.Database.Command.Name}, LogLevel.Information)
                 .EnableSensitiveDataLogging();
         }
